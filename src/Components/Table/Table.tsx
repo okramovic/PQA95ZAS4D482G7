@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import { Repository } from "../../apiTypes";
 import { FormContext, FormState } from "../../Context/formContext";
+import styles from './Table.module.css'
 
 export const Table = ({
   repositories,
@@ -12,7 +13,7 @@ export const Table = ({
   
   return (
     <div>
-      <table>
+      <table className={styles.table}>
         <thead>
           <tr>
             <th>repository name</th>
@@ -33,9 +34,9 @@ export const Table = ({
 
 const TableRow = ({id, name, open_issues_count, stargazers_count}: Repository)=> (
   <tr key={id}>
-    <td>{name}</td>
-    <td>{open_issues_count}</td>
-    <td>{stargazers_count}</td>
+    <td className={styles.td}>{name}</td>
+    <td className={styles.td}>{open_issues_count}</td>
+    <td className={styles.td}>{stargazers_count}</td>
   </tr>
 )
 

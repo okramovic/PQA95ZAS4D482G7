@@ -1,0 +1,11 @@
+.header{
+  margin-block-start: 2rem;
+  margin-block-end: 2.35rem;
+  font-size: 2rem;
+}
+
+.submit{
+  margin-top: 1.5rem;
+  padding: .66rem 1rem;
+  border-radius: 8px;
+}

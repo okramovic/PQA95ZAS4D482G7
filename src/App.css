@@ -16,28 +16,8 @@ body {
   opacity: .75;
 }
 
-.header{
-  margin-block-start: 2rem;
-  margin-block-end: 2.35rem;
-  font-size: 2rem;
-}
-
 label{
   margin-inline-end: 1rem;
-}
-
-ul{
-  cursor: default;
-  padding-inline: 0;
-}
-
-li{
-  display: flex;
-  text-align: center;
-}
-
-li:hover{
-  color: gray;
 }
 
 .form-row{
@@ -54,36 +34,6 @@ select, input{
   width: 150px;
 }
 
-#submit{
-  margin-top: 1.5rem;
-  padding: .66rem 1rem;
-  border-radius: 8px;
-}
-
-.pagination-container{
-  margin: 3rem auto;
-}
-
-.pagination-container button{
-  padding: .33rem .5rem;
-}
-
-table, ul{
-  width: 66vw;
-  max-width: 600px;
-  
-  margin-block: 3rem;
-  margin-inline-start: auto;
-  margin-inline-end: auto;
-  
-  border-spacing: 0;
-}
-
-td{
-  border-top: 1px solid gray;
-}
-
-td:nth-child(2), 
-td:nth-child(3){
-  min-width: 3rem;
+select{
+  cursor: pointer;
 }

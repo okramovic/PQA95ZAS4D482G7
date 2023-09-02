@@ -1,3 +1,5 @@
+import styles from "./Pagination.module.css";
+
 type PaginationProps = {
   page: number;
   onPageChange: (newPage: number) => void;
@@ -17,9 +19,9 @@ export const Pagination = ({
   };
 
   return (
-    <div className="pagination-container">
-      <button onClick={()=>onPaginationClick(-1)} disabled={page===1}>⏪</button>
-      <button onClick={()=>onPaginationClick(1)} disabled={!hasRepositories}>⏩</button>
+    <div className={styles['pagination-container']}>
+      <button onClick={()=>onPaginationClick(-1)} disabled={page===1} className={styles['pagination-button']}>⏪</button>
+      <button onClick={()=>onPaginationClick(1)} disabled={!hasRepositories} className={styles['pagination-button']}>⏩</button>
     </div>
   )
 }

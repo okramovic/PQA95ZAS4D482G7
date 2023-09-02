@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { isNumber } from "../../utils";
 import { Organization } from "../../apiTypes";
 import { ActionTypes, FormContext, Maximum, Minimum } from "../../Context/formContext";
+import styles from './Form.module.css';
 
 type FormProps = {
   currentOrg: Organization;
@@ -74,7 +75,7 @@ export const Form = ({
 
   return (
     <form onSubmit={onFormSubmit}>
-      <h1 className='header'>browse repositories of {currentOrg.login}:</h1>
+      <h1 className={styles.header}>browse repositories of {currentOrg.login}:</h1>
       <div className='form-row'>
         <label htmlFor='input-repository'>repository name</label>
         <input type="text" id='input-repository' onChange={onNameChange} value={name}/>
@@ -89,7 +90,7 @@ export const Form = ({
       </div>
 
       {!valid && <p>⚠️ form is not valid, please check if all data makes sense</p>}
-      <button id='submit' disabled={!valid} onClick={onRefetchClick}>reload data</button>
+      <button className={styles.submit} disabled={!valid} onClick={onRefetchClick}>reload data</button>
     </form>
   )
 }
