@@ -23,6 +23,7 @@ enum Visibility{
   private = 'private',
 }
 
+// just copy pasted and not finished
 export type Repository = {
   "id": number,
   "node_id": string,
