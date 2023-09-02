@@ -1,6 +1,6 @@
 import { ActionTypes, DispatchAction, FormState } from "./formContext";
 
-export function formReducer(state: FormState, action: DispatchAction): any {
+export function formReducer(state: FormState, action: DispatchAction) {
   switch (action.type) {
     case ActionTypes.NameUpdate:{
       return {

@@ -13,8 +13,8 @@ export const Pagination = ({
   const onPaginationClick = (delta: number)=>{
     const newPage = page + delta;
     if (newPage < 1) return;
-    onPageChange(newPage)
-  }
+    onPageChange(newPage);
+  };
 
   return (
     <div className="pagination-container">
