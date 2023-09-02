@@ -7,12 +7,14 @@ export type FormState = {
   name: string;
   minimum: Minimum;
   maximum: Maximum;
+  valid: boolean;
 }
 
 export enum ActionTypes{
   NameUpdate = 'name-update',
   MinimumUpdate = 'minimum-update',
-  MaximumUpdate = 'maximum-update'
+  MaximumUpdate = 'maximum-update',
+  SetValid = 'valid-update'
 }
 
 export type NameUpdate = {
@@ -30,12 +32,18 @@ export type MaximumUpdate = {
   payload: { value: Maximum }
 }
 
-export type DispatchAction = NameUpdate | MinimumUpdate | MaximumUpdate;
+export type ValidUpdate = {
+  type: ActionTypes.SetValid;
+  payload: { valid: boolean }
+}
+
+export type DispatchAction = NameUpdate | MinimumUpdate | MaximumUpdate | ValidUpdate;
 
 export const initialFormState: FormState = {
   name: '',
   minimum: '',
-  maximum: ''
+  maximum: '',
+  valid: true,
 }
 
 export const FormContext = createContext<{

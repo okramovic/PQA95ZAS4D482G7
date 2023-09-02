@@ -11,7 +11,7 @@ export const Form = ({
   currentOrg,
 }: FormProps) =>{
 
-  const { formState: {minimum, maximum, name}, dispatch } = useContext(FormContext);
+  const { formState: {minimum, maximum, name, valid}, dispatch } = useContext(FormContext);
 
   function handleName(value: string) {
     dispatch({
@@ -34,6 +34,13 @@ export const Form = ({
     });
   }
 
+  function handleValidity(valid: boolean){
+    dispatch({
+      type: ActionTypes.SetValid,
+      payload: {valid},
+    });
+  }
+
   const onNameChange = (ev:React.ChangeEvent<HTMLInputElement>)=>{
     handleName(ev.target.value);
   };
@@ -42,8 +49,9 @@ export const Form = ({
     const newMin = ev.target.value ? parseInt(ev.target.value) : '';
 
     if (isNumber(maximum) && maximum < newMin) {
-      return window.alert('sorry, minimum has to be lower number than maximum');
-    }
+      handleValidity(false);
+      window.alert('minimum should be lower number than maximum');
+    } else handleValidity(true);
     handleMinimum(newMin);
   };
 
@@ -51,18 +59,22 @@ export const Form = ({
     const newMax = ev.target.value ? parseInt(ev.target.value) : '';
 
     if (isNumber(minimum) && newMax < minimum) {
-      return window.alert('sorry, maximum has to be higher number than minimum');
-    }
+      handleValidity(false);
+      window.alert('maximum should be higher number than minimum');
+    } else handleValidity(true);
     handleMaximum(newMax);
   };
 
+  const onFormSubmit = (ev: React.FormEvent)=>{
+    ev.preventDefault();
+  }
+
   return (
-    <form>
+    <form onSubmit={onFormSubmit}>
       <h1 className='header'>browse repositories of {currentOrg.login}:</h1>
       <div className='form-row'>
         <label htmlFor='input-repository'>repository name</label>
-        <input type="text" id='input-repository' onChange={onNameChange} value={name}
-        />
+        <input type="text" id='input-repository' onChange={onNameChange} value={name}/>
       </div>
       <div className='form-row'>
         <label htmlFor='issues-minimum'>minimum issues</label>
@@ -70,8 +82,11 @@ export const Form = ({
       </div>
       <div className='form-row'>
         <label htmlFor='issues-maximum'>maximum issues</label>
-        <input type="number" id='issues-maximum' onChange={onMaximumChange} value={maximum}/>
+        <input type="number" id='issues-maximum' min={0} onChange={onMaximumChange} value={maximum}/>
       </div>
+
+      {!valid && <p>⚠️ form is not valid, please check if all data makes sense</p>}
+      <button id='submit' disabled={!valid}>reload data</button>
     </form>
   )
 }

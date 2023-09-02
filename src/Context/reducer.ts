@@ -20,6 +20,12 @@ export function formReducer(state: FormState, action: DispatchAction): any {
         maximum: action.payload.value
       }
     }
+    case ActionTypes.SetValid: {
+      return {
+        ...state,
+        valid: action.payload.valid,
+      }
+    }
     default: {
       throw Error('Unknown action!');
     }

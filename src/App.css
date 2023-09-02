@@ -54,8 +54,18 @@ select, input{
   width: 150px;
 }
 
+#submit{
+  margin-top: 1.5rem;
+  padding: .66rem 1rem;
+  border-radius: 8px;
+}
+
 .pagination-container{
   margin: 3rem auto;
+}
+
+.pagination-container button{
+  padding: .33rem .5rem;
 }
 
 table, ul{
