@@ -29,36 +29,42 @@ function App() {
   const [organizations, setOrganizations] = useState<Organisation[]>([]);
   const [currentOrg, setCurrentOrg] = useState<Organisation|undefined>();
   const [repositories, setRepositories] = useState<Repository[]>([]);
-
   const [page, setPage] = useState(1);
 
   useEffect(()=>{
     ;(async()=>{
       const response = await octokit.request('GET /organizations', {headers: defaultHeaders});
 
-      // first one is empty so no Organisation is selected (with nothing else visible) at first (see criteria)
+      // first one is empty so no Organisation appears to be selected to user (with nothing else visible) at first (see task criteria)
       setOrganizations([{id: -1} as Organisation, ...response.data]);
       setIsLoading(false);
     })();
   },[]);
 
-  const onOrganizationSelect = async (ev: React.ChangeEvent<HTMLSelectElement>) =>{
+  const fetchAndSetRepositories = async ({newPage , newOrganisationName}: {newPage?: number, newOrganisationName?: Organisation['login']}) =>{
     setIsLoading(true);
-    const organisationName = ev.target.value;
-
-    const repositories =  await fetchRepos({organisationName, page});
+    const repositories = await fetchRepos({
+      newOrganisationName: newOrganisationName ?? currentOrg!.login, 
+      page: newPage ?? page,
+    });
     setRepositories(repositories);
-    const newOrganisation = organizations.find(({login})=>login === organisationName);
-    setCurrentOrg(newOrganisation);
     setIsLoading(false);
+  }
+
+  const onOrganizationSelect = async (ev: React.ChangeEvent<HTMLSelectElement>) =>{
+    const newOrganisationName = ev.target.value;
+    await fetchAndSetRepositories({newOrganisationName});
+    const newOrganisation = organizations.find(({login})=>login === newOrganisationName);
+    setCurrentOrg(newOrganisation);
   };
 
-  const onPageChange = async (newPage: number)=>{
-    setIsLoading(true);
+  const onPageChange = (newPage: number) =>{
     setPage(newPage);
-    const repos = await fetchRepos({organisationName: currentOrg!.login, page: newPage});
-    setRepositories(repos);
-    setIsLoading(false);
+    fetchAndSetRepositories({newPage});
+  };
+
+  const onRefetchClick = () =>{
+    fetchAndSetRepositories({});
   };
 
   return (
@@ -84,7 +90,7 @@ function App() {
           }
         </div>
 
-        {currentOrg && <Form currentOrg={currentOrg}/>}
+        { currentOrg && <Form currentOrg={currentOrg} onRefetchClick={onRefetchClick}/>}
 
         { currentOrg && <Pagination
             page={page}
@@ -101,9 +107,9 @@ function App() {
 
 export default App;
 
-async function fetchRepos({organisationName, page} : {organisationName: string, page: number}){
+async function fetchRepos({newOrganisationName, page} : {newOrganisationName: string, page: number}){
   try{
-    const response: OctokitResponse<Repository[]> = await octokit.request(`GET /orgs/${organisationName}/repos?${QUERY_PAGE}${page}`, {
+    const response: OctokitResponse<Repository[]> = await octokit.request(`GET /orgs/${newOrganisationName}/repos?${QUERY_PAGE}${page}`, {
       org: 'ORG',
       headers: defaultHeaders,
     })

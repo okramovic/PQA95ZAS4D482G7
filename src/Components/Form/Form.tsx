@@ -5,10 +5,12 @@ import { ActionTypes, FormContext, Maximum, Minimum } from "../../Context/formCo
 
 type FormProps = {
   currentOrg: Organisation;
+  onRefetchClick: ()=>void;
 }
 
 export const Form = ({
   currentOrg,
+  onRefetchClick,
 }: FormProps) =>{
 
   const { formState: {minimum, maximum, name, valid}, dispatch } = useContext(FormContext);
@@ -67,7 +69,8 @@ export const Form = ({
 
   const onFormSubmit = (ev: React.FormEvent)=>{
     ev.preventDefault();
-  }
+    //...
+  };
 
   return (
     <form onSubmit={onFormSubmit}>
@@ -86,7 +89,7 @@ export const Form = ({
       </div>
 
       {!valid && <p>⚠️ form is not valid, please check if all data makes sense</p>}
-      <button id='submit' disabled={!valid}>reload data</button>
+      <button id='submit' disabled={!valid} onClick={onRefetchClick}>reload data</button>
     </form>
   )
 }
