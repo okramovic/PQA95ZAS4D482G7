@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
 import { isNumber } from "../../utils";
-import { Organisation } from "../../apiTypes";
+import { Organization } from "../../apiTypes";
 import { ActionTypes, FormContext, Maximum, Minimum } from "../../Context/formContext";
 
 type FormProps = {
-  currentOrg: Organisation;
+  currentOrg: Organization;
   onRefetchClick: ()=>void;
 }
 

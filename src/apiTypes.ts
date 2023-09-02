@@ -1,4 +1,4 @@
-export type Organisation = {
+export type Organization = {
   login: string;
   id: number;
   node_id: string;

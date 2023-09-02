@@ -2,12 +2,13 @@ import React, { useEffect, useReducer, useState } from 'react';
 import './App.css';
 import { Octokit } from "octokit";
 import { OctokitResponse } from '@octokit/types';
-import { Organisation, Repository } from './apiTypes';
+import { Organization, Repository } from './apiTypes';
 import { Table } from './Components/Table/Table';
 import { Pagination } from './Components/Pagination/Pagination';
 import { Form } from './Components/Form/Form';
 import { formReducer } from './Context/reducer';
 import { FormContext, initialFormState } from './Context/formContext';
+import { OrganizationSelection } from './Components/OrganizationSelection/OrganizationSelection';
 
 const TOKEN = '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',
 QUERY_PAGE = 'page=';
@@ -26,8 +27,8 @@ function App() {
   const [formState, dispatch] = useReducer(formReducer, initialFormState);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [organizations, setOrganizations] = useState<Organisation[]>([]);
-  const [currentOrg, setCurrentOrg] = useState<Organisation|undefined>();
+  const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [currentOrg, setCurrentOrg] = useState<Organization|undefined>();
   const [repositories, setRepositories] = useState<Repository[]>([]);
   const [page, setPage] = useState(1);
 
@@ -36,25 +37,24 @@ function App() {
       const response = await octokit.request('GET /organizations', {headers: defaultHeaders});
 
       // first one is empty so no Organisation appears to be selected to user (with nothing else visible) at first (see task criteria)
-      setOrganizations([{id: -1} as Organisation, ...response.data]);
+      setOrganizations([{id: -1} as Organization, ...response.data]);
       setIsLoading(false);
     })();
   },[]);
 
-  const fetchAndSetRepositories = async ({newPage , newOrganisationName}: {newPage?: number, newOrganisationName?: Organisation['login']}) =>{
+  const fetchAndSetRepositories = async ({newPage, newName}: {newPage?: number, newName?: Organization['login']}) =>{
     setIsLoading(true);
     const repositories = await fetchRepos({
-      newOrganisationName: newOrganisationName ?? currentOrg!.login, 
+      organization: newName ?? currentOrg!.login, 
       page: newPage ?? page,
     });
     setRepositories(repositories);
     setIsLoading(false);
   }
 
-  const onOrganizationSelect = async (ev: React.ChangeEvent<HTMLSelectElement>) =>{
-    const newOrganisationName = ev.target.value;
-    await fetchAndSetRepositories({newOrganisationName});
-    const newOrganisation = organizations.find(({login})=>login === newOrganisationName);
+  const onOrganizationChange = async (newName: string) =>{
+    await fetchAndSetRepositories({newName: newName});
+    const newOrganisation = organizations.find(({login})=>login === newName);
     setCurrentOrg(newOrganisation);
   };
 
@@ -69,26 +69,12 @@ function App() {
 
   return (
     <FormContext.Provider value={{formState, dispatch}}>
-      <div className={`app ${isLoading ? 'loading' : ''}`}>
-        <div className='form-row'>
-          <label htmlFor='organization-selection'>
-            select organization
-          </label>
-          { !!organizations.length && <select
-              onChange={onOrganizationSelect}
-              value={currentOrg?.login}
-              id='organization-selection'
-            >
-              { organizations
-                .map(({id, login}) =>(
-                  <option key={id} value={login}>
-                    {login}
-                  </option>
-                ))
-              }
-            </select>
-          }
-        </div>
+      <main className={`app ${isLoading ? 'loading' : ''}`}>
+        <OrganizationSelection 
+          organizations={organizations}
+          currentOrganization={currentOrg}
+          onOrganizationChange={onOrganizationChange}
+        />
 
         { currentOrg && <Form currentOrg={currentOrg} onRefetchClick={onRefetchClick}/>}
 
@@ -100,22 +86,22 @@ function App() {
         }
 
         { currentOrg && <Table repositories={repositories} />}
-      </div>
+      </main>
     </FormContext.Provider> 
   );
 }
 
 export default App;
 
-async function fetchRepos({newOrganisationName, page} : {newOrganisationName: string, page: number}){
+async function fetchRepos({organization, page} : {organization: Organization['login'], page: number}){
   try{
-    const response: OctokitResponse<Repository[]> = await octokit.request(`GET /orgs/${newOrganisationName}/repos?${QUERY_PAGE}${page}`, {
+    const response: OctokitResponse<Repository[]> = await octokit.request(`GET /orgs/${organization}/repos?${QUERY_PAGE}${page}`, {
       org: 'ORG',
       headers: defaultHeaders,
-    })
+    });
     return response.data;
   } catch(e){
-    console.error(e)
-    return []
+    console.error(e);
+    return [];
   }
 }
