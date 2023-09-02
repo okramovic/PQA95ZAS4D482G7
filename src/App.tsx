@@ -8,6 +8,7 @@ import { Form } from './Components/Form/Form';
 import { formReducer } from './Context/reducer';
 import { FormContext, initialFormState } from './Context/formContext';
 import { OrganizationSelection } from './Components/OrganizationSelection/OrganizationSelection';
+import { LoadingIndicator } from './Components/LoadingIndicator/LoadingIndicator';
 
 function App() {
 
@@ -22,7 +23,7 @@ function App() {
     ;(async()=>{
       const organizations = await fetchOrganizations();
 
-      // first one is fake empty one so that no Organisation appears to be selected to the user
+      // first one is fake empty Org so that no Organisation appears to be selected to the user
       // (with nothing else visible) at first (see task criteria)
       setOrganizations([{id: -1} as Organization, ...organizations]);
       setIsLoading(false);
@@ -61,6 +62,8 @@ function App() {
           currentOrganization={currentOrg}
           onOrganizationChange={onOrganizationChange}
         />
+        { isLoading && <LoadingIndicator/>}
+
         { currentOrg && 
             <FormContext.Provider value={{formState, dispatch}}>
               <>
