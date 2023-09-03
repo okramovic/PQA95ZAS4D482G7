@@ -1,19 +1,19 @@
-.table{
+.table {
   width: 66vw;
   max-width: 600px;
-  
+
   margin-block: 3rem;
   margin-inline-start: auto;
   margin-inline-end: auto;
-  
+
   border-spacing: 0;
 }
 
-.td{
+.td {
   border-top: 1px solid black;
 }
 
 .td:nth-child(2),
-.td:nth-child(3){
+.td:nth-child(3) {
   min-width: 3rem;
 }

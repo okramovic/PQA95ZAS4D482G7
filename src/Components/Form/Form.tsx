@@ -1,96 +1,127 @@
 import React, { useContext } from "react";
 import { isNumber } from "../../utils";
 import { Organization } from "../../apiTypes";
-import { ActionTypes, FormContext, Maximum, Minimum } from "../../Context/formContext";
-import styles from './Form.module.css';
+import {
+  ActionTypes,
+  FormContext,
+  Maximum,
+  Minimum,
+} from "../../Context/formContext";
+import styles from "./Form.module.css";
 
 type FormProps = {
   currentOrg: Organization;
-  onRefetchClick: ()=>void;
-}
+  onRefetchClick: () => void;
+};
 
-export const Form = ({
-  currentOrg,
-  onRefetchClick,
-}: FormProps) =>{
-
-  const { formState: {minimum, maximum, name, valid}, dispatch } = useContext(FormContext);
+export const Form = ({ currentOrg, onRefetchClick }: FormProps) => {
+  const {
+    formState: { minimum, maximum, name, valid },
+    dispatch,
+  } = useContext(FormContext);
 
   function handleName(value: string) {
     dispatch({
       type: ActionTypes.NameUpdate,
-      payload: {value},
+      payload: { value },
     });
   }
 
-  function handleMinimum(value: Minimum){
+  function handleMinimum(value: Minimum) {
     dispatch({
       type: ActionTypes.MinimumUpdate,
-      payload: {value},
+      payload: { value },
     });
   }
 
-  function handleMaximum(value: Maximum){
+  function handleMaximum(value: Maximum) {
     dispatch({
       type: ActionTypes.MaximumUpdate,
-      payload: {value},
+      payload: { value },
     });
   }
 
-  function handleValidity(valid: boolean){
+  function handleValidity(valid: boolean) {
     dispatch({
       type: ActionTypes.SetValid,
-      payload: {valid},
+      payload: { valid },
     });
   }
 
-  const onNameChange = (ev:React.ChangeEvent<HTMLInputElement>)=>{
+  const onNameChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
     handleName(ev.target.value);
   };
 
-  const onMinimumChange = (ev: React.ChangeEvent<HTMLInputElement>)=>{
-    const newMin = ev.target.value ? parseInt(ev.target.value) : '';
+  const onMinimumChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
+    const newMin = ev.target.value ? parseInt(ev.target.value) : "";
 
     if (isNumber(maximum) && maximum < newMin) {
       handleValidity(false);
-      window.alert('minimum should be lower number than maximum');
+      window.alert("minimum should be lower number than maximum");
     } else handleValidity(true);
     handleMinimum(newMin);
   };
 
-  const onMaximumChange = (ev: React.ChangeEvent<HTMLInputElement>)=>{
-    const newMax = ev.target.value ? parseInt(ev.target.value) : '';
+  const onMaximumChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
+    const newMax = ev.target.value ? parseInt(ev.target.value) : "";
 
     if (isNumber(minimum) && newMax < minimum) {
       handleValidity(false);
-      window.alert('maximum should be higher number than minimum');
+      window.alert("maximum should be higher number than minimum");
     } else handleValidity(true);
     handleMaximum(newMax);
   };
 
-  const onFormSubmit = (ev: React.FormEvent)=>{
+  const onFormSubmit = (ev: React.FormEvent) => {
     ev.preventDefault();
     // TBD
   };
 
   return (
     <form onSubmit={onFormSubmit}>
-      <h1 className={styles.header}>browse repositories of {currentOrg.login}:</h1>
-      <div className='form-row'>
-        <label htmlFor='input-repository'>repository name</label>
-        <input type="text" id='input-repository' onChange={onNameChange} value={name}/>
+      <h1 className={styles.header}>
+        browse repositories of {currentOrg.login}:
+      </h1>
+      <div className="form-row">
+        <label htmlFor="input-repository">repository name</label>
+        <input
+          type="text"
+          id="input-repository"
+          onChange={onNameChange}
+          value={name}
+        />
       </div>
-      <div className='form-row'>
-        <label htmlFor='issues-minimum'>minimum issues</label>
-        <input type="number" id='issues-minimum' min={0} onChange={onMinimumChange} value={minimum}/>
+      <div className="form-row">
+        <label htmlFor="issues-minimum">minimum issues</label>
+        <input
+          type="number"
+          id="issues-minimum"
+          min={0}
+          onChange={onMinimumChange}
+          value={minimum}
+        />
       </div>
-      <div className='form-row'>
-        <label htmlFor='issues-maximum'>maximum issues</label>
-        <input type="number" id='issues-maximum' min={0} onChange={onMaximumChange} value={maximum}/>
+      <div className="form-row">
+        <label htmlFor="issues-maximum">maximum issues</label>
+        <input
+          type="number"
+          id="issues-maximum"
+          min={0}
+          onChange={onMaximumChange}
+          value={maximum}
+        />
       </div>
 
-      {!valid && <p>⚠️ form is not valid, please check if all data makes sense</p>}
-      <button className={styles.submit} disabled={!valid} onClick={onRefetchClick}>reload data</button>
+      {!valid && (
+        <p>⚠️ form is not valid, please check if all data makes sense</p>
+      )}
+      <button
+        className={styles.submit}
+        disabled={!valid}
+        onClick={onRefetchClick}
+      >
+        reload data
+      </button>
     </form>
-  )
-}
+  );
+};
